@@ -58,7 +58,7 @@ string APIRest::POSTLogin (string url, string username, string password){
   }
   
 }
-string APIRest::GETInfoUpdateDate(string url, string token){
+string APIRest::GETInfoUpdateDate(string url, string token){ 
   if(!TESTING)
   {
     HTTPClient http;
@@ -112,7 +112,7 @@ string APIRest::GETInfoUpdateDate(string url, string token){
    
 }
 
-string APIRest::GETDescr(string url, string token){
+string APIRest::GETDescr(string url, string token){ 
   if(!TESTING){
     HTTPClient http;
     http.begin(url.c_str()); //Specify the URL and certificate
@@ -196,7 +196,7 @@ string APIRest::GETDescr(string url, string token){
   
 }
 
-string APIRest::GETScript(string url, string token){
+string APIRest::GETScript(string url, string token){  
   if(!TESTING){
     HTTPClient http;
     http.begin(url.c_str()); //Specify the URL and certificate
@@ -297,7 +297,7 @@ string APIRest::GETScript(string url, string token){
 }
 
 
-bool APIRest::POSTMeasurement(sample sam,string token){
+bool APIRest::POSTMeasurement(sample sam,string token){ 
   if(!TESTING){
     
     HTTPClient http;
@@ -370,7 +370,7 @@ bool APIRest::POSTMeasurement(sample sam,string token){
   }
 }
 
-void APIRest::rePOSTMeasurement(string token){
+void APIRest::rePOSTMeasurement(string token){  
   // j is useful to count the number of iteration equal to sampleBuffer size; 
   // since after repost the first element we erase it, the next one shift to the first position so access sampleBuffer[0] till end
   int size=sampleBuffer.size();
@@ -383,7 +383,7 @@ void APIRest::rePOSTMeasurement(string token){
   reposting=false;
 } 
 
-bool APIRest::POSTIssue(string url,string token,string device,string message,string type,string date){
+bool APIRest::POSTIssue(string url,string token,string device,string message,string type,string date){  
   if(!TESTING){
 
     HTTPClient http;
@@ -448,7 +448,7 @@ bool APIRest::POSTIssue(string url,string token,string device,string message,str
     return success;
   }
 }
-void APIRest::rePOSTIssue(string token){
+void APIRest::rePOSTIssue(string token){  
   // j is useful to count the number of iteration equal to Buffer size; 
   // since after repost the first element we erase it, the next one shift to the first position so access issueBuffer[0] till end
   int size=issueBuffer.size();
@@ -473,7 +473,7 @@ bool APIRest::needToBeRePOST(string response){
     return true;
 }
 
-string APIRest::getActualDate(){
+string APIRest::getActualDate(){  
 
   timeElapsed = ((float)clock() / CLOCKS_PER_SEC)*SECOND - startingTime ; //in milliseconds
   // [TBD] Arduino does not support std::to_string('float') so I used here string( String('float').c_str() )
@@ -481,7 +481,7 @@ string APIRest::getActualDate(){
 }
 
 
-string APIRest::parseResponse( string response, string fieldName, bool quotedField ){
+string APIRest::parseResponse( string response, string fieldName, bool quotedField ){ 
   deleteSpaces(response);
   if( response.find(fieldName) ==-1){
     Serial.print(fieldName.c_str());
@@ -514,21 +514,21 @@ string APIRest::parseResponse( string response, string fieldName, bool quotedFie
   
   return fieldValue;
 }
-void APIRest::deleteSpaces(string str){
+void APIRest::deleteSpaces(string str){ 
   int pos=0;
   while ( ( pos=str.find(" ") ) !=-1){
     str.erase(pos,1);//delete whitespace
   }
 }
 
-int APIRest:: getSampleBufferSize(){
+int APIRest:: getSampleBufferSize(){  
  return sampleBuffer.size();
 }
-int APIRest::getIssueBufferSize(){
+int APIRest::getIssueBufferSize(){  
   return issueBuffer.size();
 }
 
-void APIRest:: setSampleBufferSize(int size){
+void APIRest:: setSampleBufferSize(int size){ 
   // if(size<sampleBuffer.size()){ [TBD]
     //Call the correct policy
   // }
@@ -541,7 +541,7 @@ void APIRest:: setSampleBufferSize(int size){
 
 }
 
-void APIRest::setIssueBufferSize(int size){
+void APIRest::setIssueBufferSize(int size){ 
   if(size<issueBuffer.size()){
     issueBuffer.erase( issueBuffer.begin(), issueBuffer.begin()+(issueBuffer.size()-size) );// don't need to delete every issue individually because we passed the struct and not the pointer
     vector<issue>(issueBuffer).swap(issueBuffer);// this create a new Buffer with capacity equal to the size, that frees memory allocated with the erased issue
@@ -550,7 +550,7 @@ void APIRest::setIssueBufferSize(int size){
   issueBuffer.reserve(size);//useful if (size>issueBuffer.size()) in other cases it does nothing, no need of "if clause"
 }
 
-void APIRest::checkIssueBufferSize(){
+void APIRest::checkIssueBufferSize(){ 
   if(issueBufferSize<=issueBuffer.size()-(reposting? 1:0) ){ //if the rePOSTing of an issue fails, when this check is done the issue is already at the begin of issueBuffer,
     // so do not take into account its presence (so issueBuffer.size()-1), beacuse the issue will be deleted from the begin of the queue and added back to the end.
     // don't need to deallocate every issue individually because we passed the struct and not the pointer
@@ -558,7 +558,7 @@ void APIRest::checkIssueBufferSize(){
     vector<issue>(issueBuffer).swap(issueBuffer);// this create a new Buffer with capacity equal to the size, that frees memory allocated with the erased issues
   }
 }
-void APIRest::checkSampleBufferSize(){
+void APIRest::checkSampleBufferSize(){  
   if(sampleBufferSize<=sampleBuffer.size()-(reposting? 1:0) ){ //if the rePOSTing of a sample fails, when this check is done the sample is already at the begin of sampleBuffer,
     // so do not take into account its presence (so sampleBuffer.size()-1), beacuse the sample will be deleted from the begin of the queue and added back to the end.
     // [TBD]

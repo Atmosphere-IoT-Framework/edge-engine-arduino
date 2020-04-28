@@ -17,8 +17,13 @@ edgine* edgine::getInstance(){
 }
 
 edgine::edgine(){
+  #ifdef ARDUINO
   Api=APIRest::getInstance();  
   conn=connection::getInstance();
+  #else
+  Api = APIRest_windows::getInstance();
+  conn = connection_windows::getInstance();
+  #endif
 }
 
 void edgine::init( options opts){
@@ -32,7 +37,11 @@ void edgine::init( options opts){
       authenticate();
     }
     startGetCount = (float)clock() / CLOCKS_PER_SEC;
+    #ifdef ARDUINO
     Serial.println(token.c_str());
+    #else
+    cout << token.c_str() << endl;
+    #endif
     response = Api->GETInfoUpdateDate(opts.url+"/"+opts.ver+"/"+opts.info,token); // Get the infos
     if(isOKresponse(response)){
       temp = stringToSec( parseResponse(response,"token_expiration_time"));
@@ -179,7 +188,11 @@ void edgine::retrieveScriptsCode(string token, string scriptsId){
 
     codeResponse = Api->GETScript(opts.url + "/" + opts.ver + "/" + opts.scps + "?filter={\"_id\":\"" + scriptId + "\"}", token);   
     
+    #ifdef ARDUINO
     Serial.println(scriptId.c_str());
+    #else
+    cout << scriptId.c_str() << endl;
+    #endif
     
     if (!isOKresponse(codeResponse)){//if any of the requests fails
       firstGetScriptsResponse = "none";// THIS VARIABLE MATTERS ONLY THE FIRST TIME WE GET SCRIPTS
@@ -207,14 +220,24 @@ void edgine::retrieveScriptsCode(string token, string scriptsId){
       //verify if it is a new script
       for(int i=0;i<scripts.size();i++){
         if(scripts[i]->scriptId==scriptId && scripts[i]->scriptStr==tempCode ){ //if there is already this script
+          #ifdef ARDUINO
           Serial.print("Script Unchanged: ");
           Serial.println(scriptId.c_str());
+          #else
+          cout << "Script Unchanged: ";
+          cout << scriptId.c_str() << endl;
+          #endif
           scripts[i]->valid=true; // set it to valid because it is already in the API
           goto cnt; //is already present so do nothing and go to retrieve next script
         }
         else if(scripts[i]->scriptId==scriptId){ //if there is already this script but the code has changed
+          #ifdef ARDUINO
           Serial.print("Script changed: ");
           Serial.println(scriptId.c_str());
+          #else
+          cout << "Script changed: ";
+          cout << scriptId.c_str() << endl;
+          #endif
           scripts[i]->valid=false;// invalidate the old version of the script and then create the new version of it   
         }
       }    
@@ -254,30 +277,51 @@ void edgine::retrieveScriptsCode(string token, string scriptsId){
   //  delete scripts that are not valid anymore (deleted in the API)
   for(int i=0;i<scripts.size();i++){
     if(scripts[i]->valid==false){
+      #ifdef ARDUINO
       Serial.print("Script deleted: ");
       Serial.println(scripts[i]->scriptId.c_str());
+      #else
+      cout << "Script deleted: ";
+      cout << scripts[i]->scriptId.c_str() << endl;
+      #endif
       delete scripts[i];
       scripts.erase(scripts.begin()+i);
       i--; //since we deleted a script, even if the scripts size stays unchanged every position is shifted by one
     }
     else{
+      #ifdef ARDUINO
       Serial.print("Script valid: ");
       Serial.println(scripts[i]->scriptId.c_str());
+      #else
+      cout << "Script valid: ";
+      cout << scripts[i]->scriptId.c_str() << endl;
+      #endif
 
       scripts[i]->valid=false;// preset valid to false, to be reconfirmed on the next check in the API
     }
   }
   while (scripts.size()>scriptListMaxSize){
     Api->POSTIssue(opts.url+"/"+opts.ver+"/"+opts.issues,token,opts.device,"Script list full!, "+scripts.back()->scriptId+" not added ","script"); 
+    #ifdef ARDUINO
     Serial.print(scripts.back()->scriptId.c_str());
     Serial.println(" removed because list is full");
+    #else
+    cout << scripts.back()->scriptId.c_str();
+    cout << " removed because list is full" << endl;
+    #endif
     delete scripts.back();
     scripts.pop_back();
   }
 
+  #ifdef ARDUINO
   Serial.print("There are: ");
   Serial.print((int)scripts.size());
   Serial.println(" scripts");
+  #else
+  cout << "There are: ";
+  cout << (int)scripts.size();
+  cout << " scripts" << endl;
+  #endif
 }
 
 
@@ -379,8 +423,13 @@ string edgine::parseResponse( string response, string fieldName, bool delimitedF
   deleteSpaces(response);
   if( response.find(fieldName) ==-1){
     Api->POSTIssue(opts.url+"/"+opts.ver+"/"+opts.issues,token,opts.device,fieldName+" field is not present!","field");
+    #ifdef ARDUINO
     Serial.print(fieldName.c_str());
     Serial.println(" field is not present!");
+    #else
+    cout << fieldName.c_str();
+    cout << " field is not present!" << endl;
+    #endif
     return "none";
   }
 

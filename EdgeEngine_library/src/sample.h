@@ -3,6 +3,7 @@
   Created by Francesco Tornatore, February 24, 2020.
   Released into the public domain.
 */
+
 #ifndef sample_h
 #define sample_h
 #include <string>

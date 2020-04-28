@@ -6,9 +6,17 @@
 #ifndef EdgeEngine_library_h
 #define EdgeEngine_library_h
 
+#include <myDefines.h>
+
+#ifdef ARDUINO
 #include "APIRest.h"
-#include "average.h"
 #include "connection.h"
+#else
+#include "APIRest_windows.h"
+#include "connection_windows.h"
+#endif
+#include "average.h"
+
 #include "edgine.h"
 #include "filter.h"
 #include "mapVal.h"

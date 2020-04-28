@@ -5,12 +5,20 @@
 */
 #ifndef postVal_h
 #define postVal_h
+
+#include <myDefines.h>
+
+#ifdef ARDUINO
+#include "APIRest.h"
+#else
+#include "APIRest_windows.h"
+#endif
 #include <string>
 using std::string;
 #include <vector>
 using std::vector;
 #include "operation.h"
-#include "APIRest.h"
+
 
 class postVal : public operation{
   private:
@@ -21,7 +29,11 @@ class postVal : public operation{
   string feature;
   string scriptId;
   string url;
+  #ifdef ARDUINO
   APIRest* Api;
+  #else
+  APIRest_windows* Api;
+  #endif
   int numOfSamples;
   int counter;
 

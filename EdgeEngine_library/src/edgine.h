@@ -6,13 +6,21 @@
 #ifndef edgine_h
 #define edgine_h
 
+#include <myDefines.h>
+
+#ifdef ARDUINO
+#include "APIRest.h" // API wrapper
+#include "connection.h" // connection wrapper
+#else
+#include <APIRest_windows.h>
+#include <connection_windows.h>
+#endif
 
 #include <vector>
 using std::vector;
 #include <string>
 using std::string;
-#include "APIRest.h" // API wrapper
-#include "connection.h" // connection wrapper
+
 #include "script.h"
 #include "operation.h"
 #include "sample.h"
@@ -99,8 +107,13 @@ class edgine{
   
   public:
   //variables
+  #ifdef ARDUINO
   APIRest* Api; //Wrapper for the Rest API
   connection* conn;
+  #else
+  APIRest_windows* Api;
+  connection_windows* conn;
+  #endif
   
   //methods
   static edgine* getInstance();

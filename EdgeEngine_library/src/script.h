@@ -5,6 +5,9 @@
 */
 #ifndef script_h
 #define script_h
+
+#include <myDefines.h>
+
 #include <string>
 using std::string;
 #include <vector>
