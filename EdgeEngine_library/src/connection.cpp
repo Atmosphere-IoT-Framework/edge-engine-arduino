@@ -46,7 +46,7 @@ void connection::setupConnection(const char* ssidWifi,const char* passWifi){
   }
 }
 
-void connection::disconnect(){
+void connection::disconnect(){  
   if(!TESTING){
     Serial.println(F("Disconnecting.."));
     WiFi.disconnect(); 
@@ -59,7 +59,7 @@ void connection::disconnect(){
   }
 }
 
-void connection::reconnect(){
+void connection::reconnect(){ 
   if(!TESTING){
     Serial.println(F("Reconnecting.."));
     WiFi.reconnect();
@@ -73,7 +73,7 @@ void connection::reconnect(){
 }
 
 
-bool connection::isConnected(){
+bool connection::isConnected(){ 
 	if(!TESTING){
 		return (WiFi.status() == WL_CONNECTED);
 	}
@@ -81,7 +81,7 @@ bool connection::isConnected(){
 		return connected;
 	}
 }
-bool connection::isConnectionLost(){
+bool connection::isConnectionLost(){ 
   if(!TESTING){
     return (WiFi.status() == WL_CONNECTION_LOST);
   }
@@ -89,7 +89,7 @@ bool connection::isConnectionLost(){
 	  return false;
   }
 }
-int connection::status(){
+int connection::status(){ 
 	if(!TESTING){
 		return WiFi.status();
 	}

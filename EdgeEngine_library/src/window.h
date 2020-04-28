@@ -6,7 +6,11 @@
 #ifndef window_h
 #define window_h
 
+#include <myDefines.h>
+
+#ifdef ARDUINO
 #include <Arduino.h>
+#endif
 #include "operation.h"
 #include "sample.h"
 

@@ -21,7 +21,11 @@ postVal::postVal(string opName, string thing, string device, string url, string 
   if(valid){
     batch.reserve(numOfSamples);// allocate in advance what need, because dynamically it is done in power of 2 (2,4,8,16,32,..) and so waste memory
     counter=0; 
+    #ifdef ARDUINO
     Api=APIRest::getInstance();
+    #else
+    Api = APIRest_windows::getInstance();
+    #endif
   }
   
 }

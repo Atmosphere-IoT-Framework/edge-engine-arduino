@@ -3,9 +3,11 @@
   Created by Francesco Tornatore, February 24, 2020.
   Released into the public domain.
 */
+#include "postVal.h"
 #include "script.h"
 
 #include <time.h> 
+
 
 #include "reception.h"
 #include "maxVal.h"
@@ -13,7 +15,6 @@
 #include "window.h"
 #include "slidingWindow.h"
 #include "mapVal.h"
-#include "postVal.h"
 #include "filter.h"
 #include "median.h"
 #include "average.h"
@@ -36,13 +37,23 @@ script::script( string scriptId,string scriptStr, string thing, string device, s
   
   parseScript(scriptStr);
   if(!valid){
+    #ifdef ARDUINO
     Serial.print("The script was not created: ");
     Serial.println(scriptId.c_str());
+    #else
+    cout << "The script was not created: ";
+    cout << scriptId.c_str() << endl;
+    #endif
   //IF SOMETHING GOES WRONG AND THE SCRIPT IS NOT CREATED GIVE SOME ERROR
   }
   else{
+    #ifdef ARDUINO
     Serial.print("New script: ");
     Serial.println(scriptId.c_str());
+    #else
+    cout << "New script: ";
+    cout << scriptId.c_str() << endl;
+    #endif
   }
 }
 
@@ -72,8 +83,13 @@ void script::parseScript(string scriptString){
   feature =  scriptString.substr(startIndex,endIndex-startIndex);//the first is the feature
   //Check if this feature is supported else return
   if(!isAllowed(feature, featuresAllowed)){
+    #ifdef ARDUINO
     Serial.print(feature.c_str());
     Serial.println(" is not allowed!");
+    #else
+    cout << feature.c_str();
+    cout << " is not allowed!" << endl;
+    #endif
 
     return;
   }
@@ -156,8 +172,13 @@ operation* script::createOperation(string op){
     return new stdDeviation(op,statementBufferSize);    
   }
   else{
+    #ifdef ARDUINO
     Serial.print("wrong operation: ");
     Serial.println(op.c_str());
+    #else
+    cout << "wrong operation: ";
+    cout << op.c_str() << endl;
+    #endif
     return new operation(op);// if is not among the allowed operations
   }
 }
