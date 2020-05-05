@@ -46,7 +46,7 @@ void setup() {
     Edge->init(opts);
 }
 
-void loop() {
+void action() {
     cycleCounter = clock();
 
     //create a temperature measurement sample
@@ -74,7 +74,7 @@ void loop() {
 
 int main() {
     setup();
-    loop();
+    action();
 }
 
 

@@ -1,17 +1,17 @@
 Edge Engine
 =================
 ### Table of contents
-- [Overview](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Introduction)
-- [Installation](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Installation)
-    - [Prerequisites](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Prerequisites)
-        - [Windows](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Windows)
-        - [Arduino](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Arduino)
-    - [Windows installation](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Windows-installation)
-    - [Arduino installation](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Arduino-installation)
-- [Usage](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Usage)
-    - [PC example](https://github.com/Atmosphere-IoT-Framework/edge-edgine#PC-example)
-    - [Arduino example](https://github.com/Atmosphere-IoT-Framework/edge-edgine#Arduino-example)
-- [Implementation for other devices](https://github.com/Atmosphere-IoT-Framework/edge-edgine/#Implementation-for-other-devices)
+- [Overview](https://github.com/Atmosphere-IoT-Framework/edge-engine#overview)
+- [Installation](https://github.com/Atmosphere-IoT-Framework/edge-engine#installation)
+    - [Prerequisites](https://github.com/Atmosphere-IoT-Framework/edge-engine#prerequisites)
+        - [Windows](https://github.com/Atmosphere-IoT-Framework/edge-engine#windows)
+        - [Arduino](https://github.com/Atmosphere-IoT-Framework/edge-engine#arduino)
+    - [Windows installation](https://github.com/Atmosphere-IoT-Framework/edge-engine#windows-installation)
+    - [Arduino installation](https://github.com/Atmosphere-IoT-Framework/edge-engine#arduino-installation)
+- [Usage](https://github.com/Atmosphere-IoT-Framework/edge-engine#Usage)
+    - [PC example](https://github.com/Atmosphere-IoT-Framework/edge-engine#PC-example)
+    - [Arduino example](https://github.com/Atmosphere-IoT-Framework/edge-engine#Arduino-example)
+- [Implementation for other devices](https://github.com/Atmosphere-IoT-Framework/edge-engine#Implementation-for-other-devices)
 ## Overview
 The idea behind this project is to create a generic runtime system and therefore compatible in various circumstances, independent of the hardware and suitable for simple devices such as integrated boards.
 This engine can process data flows from sensors through scripts or execute commands using the actuators connected to it.
@@ -83,8 +83,8 @@ path\to\EdgeEngine_library\examples\CC\EdgeEdgine\EdgineExample.exe
 -Lpath\to\msys64\mingw64\lib
 -lPocoFoundation -lPocoUtil -lPocoNet
 ```
-The code is mainly divided in two parts: a *setup* one and an *action* one. Both are represented by two function sequentially called by the _main_.
-The *setup* phase consists of _options_ setup. These are the fields necessary to the establish a connection with the given database:
+The code is mainly divided in two parts: a **setup** one and an **action** one. Both are represented by two function sequentially called by the _main_.
+The **setup** phase consists of _options_ setup. These are the fields necessary to the establish a connection with the given database:
 ```
 options opts;
     //login
@@ -109,7 +109,7 @@ Then, Edge engine is initialized with the given _options_:
 Edge = edgine::getInstance();
 Edge->init(opts);
 ```
-The *action* phase is the one which is needed for the samples' measurements upload.
+The **action** phase is the one which is needed for the samples' measurements upload.
 First, the necessary sample is created:
 ```
 temperature = new sample("temperature");
@@ -134,15 +134,15 @@ In order to have the ESP32 development kit you have to install it form the Ardui
 If you want to use Edge Engine for your personal device, first you need to manage HTTP requests, so we suggest the use of a dedicated library.
 Regarding the code, you need to add your device name to the _myDefines.h_ file and add your own implementation of the code everywhere there is an #ifdef directive. Those directives are used to manage different implementations of many code parts, such as the HTTP requests ones.
 The files involved in this process should be the following ones:
-- *PostVal.cpp*
-- *PostVal.h*
-- *edgine.h*
-- *edgine.cpp*
-- *script.cpp*
-- *script.h*
-- *window.h*
-- *EdgeEngineLibrary.h* 
-- *myDefines.h*
+- **PostVal.cpp**
+- **PostVal.h**
+- **edgine.h**
+- **edgine.cpp**
+- **script.cpp**
+- **script.h**
+- **window.h**
+- **EdgeEngineLibrary.h**
+- **myDefines.h**
 
 
 
