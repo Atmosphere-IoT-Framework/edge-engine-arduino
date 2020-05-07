@@ -124,6 +124,6 @@ ArduinoOutput/core/stP1kAlM
 ArduinoOutput/sketch/src/average.h
 ArduinoOutput/sketch/src/median.h
 ArduinoOutput/sketch/src/stdDeviation.h
-EdgeEngine_library/examples/EdgeEngine/ArduinoOutput/
+EdgeEngine_library/examples/EdgeEngineIno/ArduinoOutput/
 EdgeEngine_library/test/UnitTestEdgeEngine/ArduinoOutput/
-EdgeEngine_library/library_windows/out
+EdgeEngine_library/examples/EdgeEngineWin/EdgineTest.exe
