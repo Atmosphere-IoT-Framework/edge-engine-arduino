@@ -1,27 +1,27 @@
 Edge Engine
 =================
 ### Table of contents
-- [Overview](https://github.com/Atmosphere-IoT-Framework/edge-engine#overview)
-- [Installation](https://github.com/Atmosphere-IoT-Framework/edge-engine#installation)
-    - [Prerequisites](https://github.com/Atmosphere-IoT-Framework/edge-engine#prerequisites)
-        - [Windows](https://github.com/Atmosphere-IoT-Framework/edge-engine#windows)
-        - [Arduino](https://github.com/Atmosphere-IoT-Framework/edge-engine#arduino)
-    - [Windows installation](https://github.com/Atmosphere-IoT-Framework/edge-engine#windows-installation)
-    - [Arduino installation](https://github.com/Atmosphere-IoT-Framework/edge-engine#arduino-installation)
-- [Usage](https://github.com/Atmosphere-IoT-Framework/edge-engine#Usage)
-    - [PC example](https://github.com/Atmosphere-IoT-Framework/edge-engine#PC-example)
-    - [Arduino example](https://github.com/Atmosphere-IoT-Framework/edge-engine#Arduino-example)
-- [Implementation for other devices](https://github.com/Atmosphere-IoT-Framework/edge-engine#Implementation-for-other-devices)
+- [Overview](https://github.com/Measurify/edge#overview)
+- [Installation](https://github.com/Measurify/edge#installation)
+    - [Prerequisites](https://github.com/Measurify/edge#prerequisites)
+        - [Windows](https://github.com/Measurify/edge#windows)
+        - [Arduino](https://github.com/Measurify/edge#arduino)
+    - [Windows installation](https://github.com/Measurify/edge#windows-installation)
+    - [Arduino installation](https://github.com/Measurify/edge#arduino-installation)
+- [Usage](https://github.com/Measurify/edge#Usage)
+    - [PC example](https://github.com/Measurify/edge#PC-example)
+    - [Arduino example](https://github.com/Measurify/edge#Arduino-example)
+- [Implementation for other devices](https://github.com/Measurify/edge#Implementation-for-other-devices)
 ## Overview
 The idea behind this project is to create a generic runtime system and therefore compatible in various circumstances, independent of the hardware and suitable for simple devices such as integrated boards.
 This engine can process data flows from sensors through scripts or execute commands using the actuators connected to it.
 Scripts are made up of a set of known operations which can also be used together to perform even complex calculations on each measurement flow. The Edge Engine can be configured to retrieve scripts online (from a cloud) to be run locally and periodically check whether these have changed or if there are new scripts to be executed.
 In order to work and to exploit all its potential, the engine needs therefore an online endpoint through which it can be programmed. It is not tied to any proprietary platform, the provider can choose the cloud service to which the engine will be connected. 
-In this specific project, Atmosphere will be used: a cloud-based, measurement-oriented platform created by the Elios Lab of the University of Genoa to manage intelligent objects in IoT ecosystems.
+In this specific project, Measurify will be used: a cloud-based, measurement-oriented platform created by the Elios Lab of the University of Genoa to manage intelligent objects in IoT ecosystems.
 ## Installation
 ### Prerequisites
 ##### Windows
-- A C++14 compiler (GCC 8.1.0 or newer suggested)
+- A C++14 or higher compiler (GCC 8.1.0 or newer suggested)
 - [MINGW64](http://www.mingw.org/)
 - [MSYS2](https://www.msys2.org/)
 - [POCO](https://pocoproject.org/) headers and libraries 
@@ -48,10 +48,10 @@ Inside this repository you can find two examples relative to the Edge Engine lib
 In this section you will learn how to make both of them work correctly.
 Both examples have a common base.
 First, they check if there is an internet connection, then, if yes, they proceed with the authentication phase: a POST request containing username and password is sent and, if the process is successful, a JWT is received. This JWT is needed to send the future HTTP requests.
-Then _samples_ are created, containing the parameters read by the sensors taken into consideration. These samples, characterized by a feature name, a date, and a value are finally sent to Atmosphere.
+Then _samples_ are created, containing the parameters read by the sensors taken into consideration. These samples, characterized by a feature name, a date, and a value are finally sent to Measurify.
 It is possible to switch between versions by modifying the _myDefines.h_ file.
 ### PC example
-The PC example simulates a temperature sensor behavior and it uses the Atmosphere platform as online server.
+The PC example simulates a temperature sensor behavior and it uses the Measurify platform as online server.
 In order to make it work it is necessary to give the compiler some directives, so it can find the POCO libraries and link the sub-libraries correctly.
 Here you have a sample compile command:
 ```
@@ -128,7 +128,7 @@ Keep in mind that in this example the _getTemperature_ function is only a placeh
 ### Arduino example
 The Arduino example is slightly different from the PC one. Since the program is supposed to be used with an ESP32 board, the Wi-Fi connection is supported so that the board itself connects to a given SSID and, if the connection is lost, it also tries to reconnect.
 Besides, this example uses three real sensors retrieving motion, light and temperature.
-The interfacing with Atmosphere is the same as the PC example.
+The interfacing with Measurify is the same as the PC example.
 In order to have the ESP32 development kit you have to install it form the Arduino IDE board manager. If you don't find it you will probably have to set an additional URL for the board manager: <https://dl.espressif.com/dl/package_esp32_index.json>
 ### Implementation for other devices
 If you want to use Edge Engine for your personal device, first you need to manage HTTP requests, so we suggest the use of a dedicated library.
