@@ -9,7 +9,7 @@ Edge Engine
     - [Windows installation](https://github.com/Measurify/edge#windows-installation)
     - [Arduino installation](https://github.com/Measurify/edge#arduino-installation)
 - [Library building](https://github.com/Measurify/edge#library-building)
-	- [g++](https://github.com/Measurify/edge#g++)
+	- [g++](https://github.com/Measurify/edge#g)
 	- [MSVC](https://github.com/Measurify/edge#MSVC)
 - [Usage](https://github.com/Measurify/edge#Usage)
     - [PC example](https://github.com/Measurify/edge#PC-example)
