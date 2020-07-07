@@ -8,6 +8,9 @@ Edge Engine
         - [Arduino](https://github.com/Measurify/edge#arduino)
     - [Windows installation](https://github.com/Measurify/edge#windows-installation)
     - [Arduino installation](https://github.com/Measurify/edge#arduino-installation)
+- [Library building](https://github.com/Measurify/edge#library-building)
+	- [g++](https://github.com/Measurify/edge#g++)
+	- [MSVC](https://github.com/Measurify/edge#MSVC)
 - [Usage](https://github.com/Measurify/edge#Usage)
     - [PC example](https://github.com/Measurify/edge#PC-example)
     - [Arduino example](https://github.com/Measurify/edge#Arduino-example)
@@ -43,6 +46,37 @@ If you intend to use another compiler different from the GCC one, you can use ot
 ### Arduino installation
 All the required libraries must be inside the libraries folder which can be found by looking at the IDE settings (sketches folder path).
 Also the Edge Engine library needs to be inside the same folder. If you encounter any problem regarding the _connection_windows_ class or the _APIRest_windows_ class, delete them together with their headers from the aforementioned folder since if you compile for Arduino you do not need them.
+## Library building
+In this section the instructions for building .lib files from the source code are specified.
+### g++
+If you are using the g++ compiler here there are the istructions for creating the .lib file:
+```
+g++ -c APIRest_windows.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c average.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c connection_windows.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c edgine.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include
+g++ -c filter.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include
+g++ -c mapVal.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include
+g++ -c maxVal.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include
+g++ -c median.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include
+g++ -c minVal.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include
+g++ -c operation.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c postVal.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c reception.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c sample.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c script.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c slidingWindow.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c stdDeviation.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+g++ -c window.cpp -IC:\Edgine\EdgeEngine_library\src -IC:\msys64\mingw64\include 
+ar rcs Edgine.lib APIRest_windows.o average.o connection_windows.o edgine.o filter.o mapVal.o maxVal.o median.o minVal.o operation.o postVal.o reception.o sample.o script.o slidingWindow.o stdDeviation.o window.o
+```
+### MSVC
+If you are using the MSVC compiler we suggest to create a new Visual Studio project, then set the output file to .lib, add to the include directories the source code files and give the linker the location of your POCO libraries .lib files. Remember that, in this case, the POCO libraries need to be compiled with the MSVC compiler. In order to do that, we suggest to use [VCPKG](https://github.com/microsoft/vcpkg). Here there are the commands you should execute:
+```
+vcpkg install POCO:x64-windows
+vcpkg integrate install
+```
+If an integrate installation is performed, it will not be necessary to give the linker the POCO libraries' path.
 ## Usage
 Inside this repository you can find two examples relative to the Edge Engine library under the _examples_ folder. One of them is for the Arduino board ESP32 and the other is for PCs.
 In this section you will learn how to make both of them work correctly.

@@ -6,7 +6,7 @@
 #include <Poco/URI.h>
 #include <Poco/Exception.h>
 #include <iostream>
-#include <connection_windows.h>
+#include "connection_windows.h"
 
 using namespace Poco::Net;
 using namespace Poco;
