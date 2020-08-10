@@ -20,12 +20,14 @@ APIRest::APIRest(){
   TESTING=false;
 }
 
-string APIRest::POSTLogin (string url, string username, string password){
+string APIRest::POSTLogin (string url, string username, string password, string tenant){
   if(!TESTING){
     HTTPClient http;
     http.begin(url.c_str()); //Specify the URL and certificate
     http.addHeader("Content-Type","application/json");
-    httpCode = http.POST( ("{\"username\": \"" + username + "\",\"password\": \"" + password + "\"}").c_str() );//this is the body
+    httpCode = http.POST( ("{\"username\": \"" + username + "\",
+                              \"password\": \"" + password + "\",
+                              \"tenant\": \"" + tenant + "\"}").c_str());//this is the body
     
     itoa(httpCode,httpCodeTmp,10);
     
@@ -475,7 +477,7 @@ bool APIRest::needToBeRePOST(string response){
 
 string APIRest::getActualDate(){  
 
-  timeElapsed = ((long)clock() / CLOCKS_PER_SEC)*SECOND - startingTime ; //in milliseconds
+  timeElapsed = ((float)clock() / CLOCKS_PER_SEC)*SECOND - startingTime ; //in milliseconds
   // [TBD] Arduino does not support std::to_string('float') so I used here string( String('float').c_str() )
   return string( String( atof(timestamp.c_str()) + timeElapsed ).c_str() );
 }

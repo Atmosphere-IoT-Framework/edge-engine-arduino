@@ -20,7 +20,7 @@ APIRest_windows::APIRest_windows()
   reposting = false;
 }
 
-string APIRest_windows::POSTLogin(string url, string username, string password)
+string APIRest_windows::POSTLogin(string url, string username, string password, string tenant)
 {
   // prepare session
   URI uri(url);
@@ -36,7 +36,7 @@ string APIRest_windows::POSTLogin(string url, string username, string password)
   req.setContentType("application/json");
 
   // set the body
-  string body = "{\"username\": \"" + username + "\",\"password\": \"" + password + "\"}";
+  string body = "{\"username\": \"" + username + "\",\"password\": \"" + password + "\",\"tenant\": \"" + tenant + "\"}";
   req.setContentLength(body.length());
 
   ostream &os = session.sendRequest(req);
