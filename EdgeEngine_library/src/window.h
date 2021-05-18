@@ -9,7 +9,11 @@
 #include "myDefines.h"
 
 #ifdef ARDUINO
-#include <Arduino.h>
+  #include <Arduino.h>
+  #ifndef ESP_WROVER
+    #undef min
+    #undef max
+  #endif
 #endif
 #include "operation.h"
 #include "sample.h"

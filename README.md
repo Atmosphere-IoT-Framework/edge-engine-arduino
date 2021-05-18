@@ -5,7 +5,8 @@ Edge Engine
 - [Installation](https://github.com/Measurify/edge#installation)
     - [Prerequisites](https://github.com/Measurify/edge#prerequisites)
         - [Windows](https://github.com/Measurify/edge#windows)
-        - [Arduino](https://github.com/Measurify/edge#arduino)
+        - [Arduino/ESP](https://github.com/Measurify/edge#arduino/esp)
+		- [Arduino/ESP optional libraries](https://github.com/Measurify/edge#arduino/esp-optional-libraries)
     - [Windows installation](https://github.com/Measurify/edge#windows-installation)
     - [Arduino installation](https://github.com/Measurify/edge#arduino-installation)
 - [Library building](https://github.com/Measurify/edge#library-building)
@@ -22,16 +23,24 @@ Scripts are made up of a set of known operations which can also be used together
 In order to work and to exploit all its potential, the engine needs therefore an online endpoint through which it can be programmed. It is not tied to any proprietary platform, the provider can choose the cloud service to which the engine will be connected. 
 In this specific project, Measurify will be used: a cloud-based, measurement-oriented platform created by the Elios Lab of the University of Genoa to manage intelligent objects in IoT ecosystems.
 ## Installation
+Download or clone this repo. Remember to check the myDefines.h file, which allows to switch from Arduino, ESP and Windows platforms through preprocessor defines as follows:
+- **WINDOWS** for Windows platforms
+- **ARDUINO** for Arduino boards
+- **ESP_WROVER and ARDUINO** for ESP boards
+
+Windows compilation should also work on MacOS or Ubuntu, but it has not been tested yet.
 ### Prerequisites
+Here are listed the prerequisites for the tree aforementioned platforms.
 ##### Windows
 - A C++14 or higher compiler (GCC 8.1.0 or newer suggested)
 - [MINGW64](http://www.mingw.org/)
 - [MSYS2](https://www.msys2.org/)
 - [POCO](https://pocoproject.org/) headers and libraries 
-##### Arduino
+##### Arduino/ESP
 - [Arduino IDE](https://www.arduino.cc/en/main/software) or [VSCode](https://code.visualstudio.com/) + [Arduino extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino)
+- [WiFiNINA](https://github.com/arduino-libraries/WiFiNINA) (only for Arduino boards)
+##### Arduino/ESP optional libraries
 - [Adafruit IO](https://github.com/adafruit/Adafruit_IO_Arduino)
-- [ArduinoHttpClient](https://github.com/arduino-libraries/ArduinoHttpClient)
 - [AUnit](https://github.com/bxparks/AUnit)
 - [DHT Sensor Library](https://github.com/adafruit/DHT-sensor-library)
 - [DHT Sensor Library for ESPx](https://www.arduinolibraries.info/libraries/dht-sensor-library-for-es-px)
@@ -42,10 +51,11 @@ Once the installation is completed, open the MSYS2 prompt and install the POCO l
 ```
 $ pacman -S mingw64/mingw-w64-x86_64-poco
 ```
-If you intend to use another compiler different from the GCC one, you can use other package manager such as [VCPKG](https://github.com/microsoft/vcpkg) for windows, or [Conan](https://conan.io/).
+If you intend to use another compiler different from the GCC one, you can use other package manager such as [VCPKG](https://github.com/microsoft/vcpkg) for Windows, or [Conan](https://conan.io/).
 ### Arduino installation
 All the required libraries must be inside the libraries folder which can be found by looking at the IDE settings (sketches folder path).
 Also the Edge Engine library needs to be inside the same folder. If you encounter any problem regarding the _connection_windows_ class or the _APIRest_windows_ class, delete them together with their headers from the aforementioned folder since if you compile for Arduino you do not need them.
+For the Arduino installation, not the ESP, it is necessary to have part of the stdlib, which can be added by moving the include folder (available in this repository as the include.rar archive, to be extracted) inside the Arduino installation folder. In Windows it should be placed in C:\Program Files (x86)\Arduino\hardware\tools\avr\avr\ replacing the existing include folder. Also, only for Arduino boards, you will need to add the SSL certificate of Measurify to the board. In order to do so you need to update the WiFiNINA firmware to at least version 1.4.3 and add the certificate of students.atmosphere.tools (the Measurify URL) by following [this post](https://support.arduino.cc/hc/en-us/articles/360016119219-How-to-add-certificates-to-Wifi-Nina-Wifi-101-Modules-).
 ## Library building
 In this section the instructions for building .lib files from the source code are specified.
 ### g++
