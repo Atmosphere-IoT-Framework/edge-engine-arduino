@@ -426,8 +426,8 @@ string edgine::parseToken(string response){
   //   return response.substr( response.find("J"), response.rfind("\"")-response.find("J") );
   // }
   // return "none";
-  if(response.find("\"token\": \"JWT ")!=-1){
-    return response.substr( response.find("\"token\": \"JWT ")+10, response.rfind("\"")-response.find("\"token\":") -10);
+  if(response.find("\"token\":\"JWT ")!=-1){
+    return response.substr( response.find("\"token\":\"JWT ")+9, response.rfind("\"")-response.find("\"token\":\"JWT ") -9);
   }
   return "none";
 }
