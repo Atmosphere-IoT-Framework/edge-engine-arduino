@@ -23,12 +23,11 @@ Scripts are made up of a set of known operations which can also be used together
 In order to work and to exploit all its potential, the engine needs therefore an online endpoint through which it can be programmed. It is not tied to any proprietary platform, the provider can choose the cloud service to which the engine will be connected. 
 In this specific project, Measurify will be used: a cloud-based, measurement-oriented platform created by the Elios Lab of the University of Genoa to manage intelligent objects in IoT ecosystems.
 ## Installation
-Download or clone this repo. Remember to check the myDefines.h file, which allows to switch from Arduino, ESP and Windows platforms through preprocessor defines as follows:
-- **WINDOWS** for Windows platforms
+Download or clone this repo. Remember to check the myDefines.h file, which allows to switch from Arduino, ESP and PC platforms through preprocessor defines as follows:
 - **ARDUINO** for Arduino boards
 - **ESP_WROVER and ARDUINO** for ESP boards
 
-Windows compilation should also work on MacOS or Ubuntu, but it has not been tested yet.
+If none are defined, compilation will be for PC. It should also work on MacOS or Ubuntu, but it has only been tested on Windows.
 ### Prerequisites
 Here are listed the prerequisites for the tree aforementioned platforms.
 ##### Windows
