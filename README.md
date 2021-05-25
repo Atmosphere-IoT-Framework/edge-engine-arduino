@@ -124,7 +124,7 @@ path\to\EdgeEngine_library\examples\CC\EdgeEdgine\EdgineExample.exe
 -Ipath\to\EdgeEngine\edge-engine\EdgeEngine_library\src
 -Lpath\to\msys64\mingw64\bin
 -Lpath\to\msys64\mingw64\lib
--lPocoFoundation -lPocoUtil -lPocoNet
+-lPocoFoundation -lPocoUtil -lPocoNet -lPocoNetSSL
 ```
 The code is mainly divided in two parts: a **setup** one and an **action** one. Both are represented by two function sequentially called by the _main_.
 The **setup** phase consists of _options_ setup. These are the fields necessary to the establish a connection with the given database:
