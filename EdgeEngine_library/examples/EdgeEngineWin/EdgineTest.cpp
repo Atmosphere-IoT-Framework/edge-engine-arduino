@@ -26,10 +26,11 @@ void setup() {
     Connection = connection_windows::getInstance();
     options opts;
     //login
-    opts.username = "riccardo-office-temperature-sensor-username";
-    opts.password =  "riccardo-office-temperature-sensor-password";
+    opts.username = "distancing-user-username";
+    opts.password = "distancing-user-password";
+    opts.tenant = "social-distancing-reminder";
     //route
-    opts.url = "http://students.atmosphere.tools";
+    opts.url = "https://students.atmosphere.tools";
     opts.ver = "v1";
     opts.login = "login";
     opts.devs = "devices";
@@ -38,15 +39,17 @@ void setup() {
     opts.info= "info";
     opts.issues="issues";
     //Edgine identifiers
-    opts.thing = "riccardo-office";
-    opts.device = "environment-riccardo-office";
-    opts.id = "environment-riccardo-office";
+    opts.thing = "User B";
+    opts.device = "distance-monitor-1";
+    opts.id = "distance-monitor-1";
     //initialize Edge engine
     Edge = edgine::getInstance();
     Edge->init(opts);
 }
 
-void action() {
+void action(int counter) {
+  for(int i = 0; i < counter; i++)
+  {
     cycleCounter = clock();
 
     //create a temperature measurement sample
@@ -70,11 +73,12 @@ void action() {
     ((float)cycleCounter/CLOCKS_PER_SEC) < Edge->getPeriod() ? sleepTime = (Edge->getPeriod() - (float)cycleCounter/CLOCKS_PER_SEC)*1000 : sleepTime = 0;//delay in milliseconds
   
     Sleep(sleepTime);
+  }
 }
 
 int main() {
     setup();
-    action();
+    action(4);
 }
 
 

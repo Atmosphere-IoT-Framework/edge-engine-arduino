@@ -127,3 +127,4 @@ ArduinoOutput/sketch/src/stdDeviation.h
 EdgeEngine_library/examples/EdgeEngineIno/ArduinoOutput/
 EdgeEngine_library/test/UnitTestEdgeEngine/ArduinoOutput/
 EdgeEngine_library/examples/EdgeEngineWin/EdgineTest.exe
+.vscode

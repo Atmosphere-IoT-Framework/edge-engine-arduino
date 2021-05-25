@@ -22,9 +22,35 @@ APIRest_windows::APIRest_windows()
 
 string APIRest_windows::POSTLogin(string url, string username, string password, string tenant)
 {
+  try{
+    Poco::Net::initializeSSL();
+    Poco::SharedPtr<Poco::Net::InvalidCertificateHandler> ptrHandler = new AcceptCertificateHandler(false);
+    Context::Ptr ptrContext = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, true, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
+    SSLManager::instance().initializeClient(0, ptrHandler, ptrContext);
+
+    Poco::Net::SocketAddress address("students.atmosphere.tools:443");
+    Poco::Net::SecureStreamSocket socket(address);
+    if (socket.havePeerCertificate())
+    {
+        X509Certificate cert = socket.peerCertificate();
+        std::cout<<cert.issuerName()<<"\n"; 
+    }
+    else
+    {
+        std::cout<<"No certificate";
+    }
+
+  } 
+  catch (Poco::Exception& e) {
+    std::cout << "Error: " << e.displayText() << "\n";
+    return "";
+  }
+
+  cout << "LOGGING IN..." << endl;
   // prepare session
   URI uri(url);
-  HTTPClientSession session(uri.getHost(), uri.getPort());
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
+  session.setKeepAlive(true);
 
   // prepare path
   string path(uri.getPathAndQuery());
@@ -32,19 +58,23 @@ string APIRest_windows::POSTLogin(string url, string username, string password, 
     path = "/";
 
   // send request
-  HTTPRequest req(HTTPRequest::HTTP_POST, path);
+  HTTPRequest req(HTTPRequest::HTTP_POST, path, "HTTP/1.1");
   req.setContentType("application/json");
 
   // set the body
   string body = "{\"username\": \"" + username + "\",\"password\": \"" + password + "\",\"tenant\": \"" + tenant + "\"}";
   req.setContentLength(body.length());
 
+  req.setKeepAlive(true);
+ 
   ostream &os = session.sendRequest(req);
   os << body;           // sends the body
+
   req.write(std::cout); // print out request
 
   // get response
   HTTPResponse res;
+
   cout << res.getStatus() << " " << res.getReason() << endl;
   istream &is = session.receiveResponse(res);
   // StreamCopier::copyStream(is, cout);
@@ -69,7 +99,7 @@ string APIRest_windows::GETInfoUpdateDate(string url, string token)
 {
   // prepare session
   URI uri(url);
-  HTTPClientSession session(uri.getHost(), uri.getPort());
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
 
   // prepare path
   string path(uri.getPathAndQuery());
@@ -77,7 +107,7 @@ string APIRest_windows::GETInfoUpdateDate(string url, string token)
     path = "/";
 
   // send request
-  HTTPRequest req(HTTPRequest::HTTP_GET, path);
+  HTTPRequest req(HTTPRequest::HTTP_GET, path, "HTTP/1.1");
   req.add("Authorization", token.c_str());
   session.sendRequest(req);
 
@@ -110,7 +140,7 @@ string APIRest_windows::GETDescr(string url, string token)
 {
   // prepare session
   URI uri(url);
-  HTTPClientSession session(uri.getHost(), uri.getPort());
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
 
   // prepare path
   string path(uri.getPathAndQuery());
@@ -118,7 +148,7 @@ string APIRest_windows::GETDescr(string url, string token)
     path = "/";
 
   // send request
-  HTTPRequest req(HTTPRequest::HTTP_GET, path);
+  HTTPRequest req(HTTPRequest::HTTP_GET, path, "HTTP/1.1");
   req.add("Authorization", token.c_str());
   session.sendRequest(req);
 
@@ -148,7 +178,7 @@ string APIRest_windows::GETScript(string url, string token)
 {
   // prepare session
   URI uri(url);
-  HTTPClientSession session(uri.getHost(), uri.getPort());
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
 
   // prepare path
   string path(uri.getPathAndQuery());
@@ -156,7 +186,7 @@ string APIRest_windows::GETScript(string url, string token)
     path = "/";
 
   // send request
-  HTTPRequest req(HTTPRequest::HTTP_GET, path);
+  HTTPRequest req(HTTPRequest::HTTP_GET, path, "HTTP/1.1");
   req.add("Authorization", token.c_str());
   session.sendRequest(req);
 
@@ -186,7 +216,7 @@ bool APIRest_windows::POSTMeasurement(sample sam, string token)
 {
   // prepare session
   URI uri(sam.url.c_str());
-  HTTPClientSession session(uri.getHost(), uri.getPort());
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
 
   // prepare path
   string path(uri.getPathAndQuery());
@@ -194,7 +224,7 @@ bool APIRest_windows::POSTMeasurement(sample sam, string token)
     path = "/";
 
   // send request
-  HTTPRequest req(HTTPRequest::HTTP_POST, path);
+  HTTPRequest req(HTTPRequest::HTTP_POST, path, "HTTP/1.1");
   req.setContentType("application/json");
   req.add("Authorization", token.c_str());
 
@@ -261,7 +291,7 @@ bool APIRest_windows::POSTIssue(string url, string token, string device, string 
 {
   // prepare session
   URI uri(url);
-  HTTPClientSession session(uri.getHost(), uri.getPort());
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
 
   // prepare path
   string path(uri.getPathAndQuery());
@@ -269,7 +299,7 @@ bool APIRest_windows::POSTIssue(string url, string token, string device, string 
     path = "/";
 
   // send request
-  HTTPRequest req(HTTPRequest::HTTP_POST, path);
+  HTTPRequest req(HTTPRequest::HTTP_POST, path, "HTTP/1.1");
   req.setContentType("application/json");
   req.add("Authorization", token.c_str());
 
