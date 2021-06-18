@@ -186,7 +186,3 @@ The files involved in this process should be the following ones:
 - **window.h**
 - **EdgeEngineLibrary.h**
 - **myDefines.h**
-
-
-
-
