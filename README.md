@@ -5,9 +5,11 @@ Edge Engine
 - [Installation](https://github.com/Measurify/edge#installation)
     - [Prerequisites](https://github.com/Measurify/edge#prerequisites)
         - [Windows](https://github.com/Measurify/edge#windows)
+        - [MacOS](https://github.com/Measurify/edge#macos)
         - [Arduino/ESP](https://github.com/Measurify/edge#arduinoesp)
 		- [Arduino/ESP optional libraries](https://github.com/Measurify/edge#arduinoesp-optional-libraries)
     - [Windows installation](https://github.com/Measurify/edge#windows-installation)
+    - [MacOS installation](https://github.com/Measurify/edge#macos-installation)
     - [Arduino installation](https://github.com/Measurify/edge#arduino-installation)
 - [Library building](https://github.com/Measurify/edge#library-building)
 	- [g++](https://github.com/Measurify/edge#g)
@@ -27,7 +29,7 @@ Download or clone this repo. Remember to check the myDefines.h file, which allow
 - **ARDUINO** for Arduino boards
 - **ESP_WROVER and ARDUINO** for ESP boards
 
-If none are defined, compilation will be for PC. It should also work on MacOS or Ubuntu, but it has only been tested on Windows.
+If none are defined, compilation will be for PC. It should also work on Ubuntu, but it has only been tested on Windows and MacOS.
 ### Prerequisites
 Here are listed the prerequisites for the tree aforementioned platforms.
 ##### Windows
@@ -35,6 +37,10 @@ Here are listed the prerequisites for the tree aforementioned platforms.
 - [MINGW64](http://www.mingw.org/)
 - [MSYS2](https://www.msys2.org/)
 - [POCO](https://pocoproject.org/) headers and libraries 
+##### MacOS
+- A C++14 or higher compiler (GCC 8.1.0 or newer suggested)
+- [Homebrew](https://brew.sh/index_it)
+- [POCO](https://pocoproject.org/) headers and libraries
 ##### Arduino/ESP
 - [Arduino IDE](https://www.arduino.cc/en/main/software) or [VSCode](https://code.visualstudio.com/) + [Arduino extension](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino)
 - [WiFiNINA](https://github.com/arduino-libraries/WiFiNINA) (only for Arduino boards)
@@ -48,9 +54,15 @@ Here are listed the prerequisites for the tree aforementioned platforms.
 In order to install the POCO libraries (required for the HTTP requests) we suggest using the MSYS2 package manager for MINGW64.
 Once the installation is completed, open the MSYS2 prompt and install the POCO libraries:
 ```
-$ pacman -S mingw64/mingw-w64-x86_64-poco
+pacman -S mingw64/mingw-w64-x86_64-poco
 ```
 If you intend to use another compiler different from the GCC one, you can use other package manager such as [VCPKG](https://github.com/microsoft/vcpkg) for Windows, or [Conan](https://conan.io/).
+### MacOS Installation
+In order to install the POCO libraries (required for the HTTP requests) we suggest using the Homebrew package manager.
+Once the installation is completed, install the POCO libraries through the following command:
+```
+brew install poco
+```
 ### Arduino installation
 All the required libraries must be inside the libraries folder which can be found by looking at the IDE settings (sketches folder path).
 Also the Edge Engine library needs to be inside the same folder. If you encounter any problem regarding the _connection_windows_ class or the _APIRest_windows_ class, delete them together with their headers from the aforementioned folder since if you compile for Arduino you do not need them.
