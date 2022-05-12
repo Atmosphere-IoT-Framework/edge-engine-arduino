@@ -28,7 +28,7 @@ string APIRest_windows::POSTLogin(string url, string username, string password, 
     Context::Ptr ptrContext = new Context(Context::CLIENT_USE, "", "", "", Context::VERIFY_NONE, 9, true, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
     SSLManager::instance().initializeClient(0, ptrHandler, ptrContext);
 
-    Poco::Net::SocketAddress address("students.atmosphere.tools:443");
+    Poco::Net::SocketAddress address("students.measurify.org:443");
     Poco::Net::SecureStreamSocket socket(address);
     if (socket.havePeerCertificate())
     {
@@ -80,7 +80,8 @@ string APIRest_windows::POSTLogin(string url, string username, string password, 
   // StreamCopier::copyStream(is, cout);
   response = "";
   StreamCopier::copyToString(is, response);
-  itoa(res.getStatus(), status, 10);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
   response = string(status) + response;
   cout << "RESPONSE:" << endl;
   cout << response << endl;
@@ -118,7 +119,8 @@ string APIRest_windows::GETInfoUpdateDate(string url, string token)
   response = "";
   istream &is = session.receiveResponse(res);
   StreamCopier::copyToString(is, response);
-  itoa(res.getStatus(), status, 10);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
   response = string(status) + response;
   cout << "RESPONSE:" << endl;
   cout << response << endl;
@@ -159,7 +161,8 @@ string APIRest_windows::GETDescr(string url, string token)
   response = "";
   istream &is = session.receiveResponse(res);
   StreamCopier::copyToString(is, response);
-  itoa(res.getStatus(), status, 10);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
   response = string(status) + response;
   cout << "RESPONSE:" << endl;
   cout << response << endl;
@@ -197,7 +200,8 @@ string APIRest_windows::GETScript(string url, string token)
   response = "";
   istream &is = session.receiveResponse(res);
   StreamCopier::copyToString(is, response);
-  itoa(res.getStatus(), status, 10);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
   response = string(status) + response;
   cout << "RESPONSE:" << endl;
   cout << response << endl;
@@ -243,7 +247,8 @@ bool APIRest_windows::POSTMeasurement(sample sam, string token)
   // StreamCopier::copyStream(is, cout);
   response = "";
   StreamCopier::copyToString(is, response);
-  itoa(res.getStatus(), status, 10);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
   response = string(status) + response;
 
   if (isHTTPCodeOk(res.getStatus()))
@@ -318,7 +323,8 @@ bool APIRest_windows::POSTIssue(string url, string token, string device, string 
   // StreamCopier::copyStream(is, cout);
   response = "";
   StreamCopier::copyToString(is, response);
-  itoa(res.getStatus(), status, 10);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
   response = string(status) + response;
 
   if (isHTTPCodeOk(res.getStatus()))

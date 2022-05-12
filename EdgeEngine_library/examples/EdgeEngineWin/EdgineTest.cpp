@@ -26,11 +26,11 @@ void setup() {
     Connection = connection_windows::getInstance();
     options opts;
     //login
-    opts.username = "distancing-user-username";
-    opts.password = "distancing-user-password";
-    opts.tenant = "social-distancing-reminder";
+    opts.username = "body-monitor-username";
+    opts.password = "body-monitor-password";
+    opts.tenant = "body-monitor";
     //route
-    opts.url = "https://students.atmosphere.tools";
+    opts.url = "https://students.measurify.org";
     opts.ver = "v1";
     opts.login = "login";
     opts.devs = "devices";
@@ -72,7 +72,7 @@ void action(int counter) {
     // subtract te execution time to the Sleep period if result is not negative
     ((float)cycleCounter/CLOCKS_PER_SEC) < Edge->getPeriod() ? sleepTime = (Edge->getPeriod() - (float)cycleCounter/CLOCKS_PER_SEC)*1000 : sleepTime = 0;//delay in milliseconds
   
-    Sleep(sleepTime);
+    sleep(sleepTime);
   }
 }
 
