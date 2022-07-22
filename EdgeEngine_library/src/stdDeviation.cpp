@@ -40,7 +40,9 @@ sample* stdDeviation::execute() {
   }
   if(input!=NULL && counter >= numOfSamples){ // when the samples are enough (at regime)
     sample* output=new sample(*input);// we cannot corrupt the input because it is stored in the stdDeviation samples
-    output->value = calculate(samples); //beacuse we want a sample (with all its info) with the script resulting value
+   for(int i = 0; i< input->myArray.size(); i++){
+    output->myArray[i] = calculate(samples); //beacuse we want a sample (with all its info) with the script resulting value
+   } 
     output->startDate=samples.front()->startDate; //take startDate from the first sample of the stdDeviation
     delete samples[0]; // free memory from this copy of sample because it is useless now
     samples[0]=NULL;
@@ -76,14 +78,20 @@ float stdDeviation::calculate(vector<sample*> samples) {
     float avg=0;
     float res=0;
     for(int i=0;i<samples.size();i++){
-    avg+=samples[i]->value;
+      for(int j = 0; j< input->myArray.size(); j++){
+        avg+=samples[i]->myArray[j];
+      }
     }
     avg/=numOfSamples;
 
     for(int i=0;i<samples.size();i++){
-        res+= pow(samples[i]->value - avg, 2);
+      for(int j = 0; j< input->myArray.size(); j++){
+        res+= pow(samples[i]->myArray[j] - avg, 2);
+      }
     }
     res/=numOfSamples;
     return sqrt(res);
 }
+
+
 

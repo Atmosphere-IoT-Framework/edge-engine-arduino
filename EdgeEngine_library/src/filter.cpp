@@ -18,24 +18,26 @@ filter:: ~filter(){
 
 //methods
 sample* filter::execute() {
+for(int i = 0; i < (input->myArray.size()); i++){
   if(input!=NULL ){
-      //ex: filter(a<5)
-    if(function=="<" && input->value<operand1)
+        //ex: filter(a<5)
+      if(function=="<" && input->myArray[i]<operand1)
+          return input;
+      else if(function==">" && input->myArray[i]>operand1)
+          return input;
+      else if(function=="<=" && input->myArray[i]<=operand1)
+          return input;
+      else if(function==">=" && input->myArray[i]>=operand1)
+          return input;
+      else if(function=="==" && input->myArray[i]==operand1)
+          return input;
+      else if(function=="C" && (input->myArray[i]>=operand1 && input->myArray[i]<=operand2) )
         return input;
-    else if(function==">" && input->value>operand1)
+      else if(function=="/C" && (input->myArray[i]<=operand1 || input->myArray[i]>=operand2) )
         return input;
-    else if(function=="<=" && input->value<=operand1)
-        return input;
-    else if(function==">=" && input->value>=operand1)
-        return input;
-    else if(function=="==" && input->value==operand1)
-        return input;
-    else if(function=="C" && (input->value>=operand1 && input->value<=operand2) )
-      return input;
-    else if(function=="/C" && (input->value<=operand1 || input->value>=operand2) )
-      return input;
-  }
-  delete input;
+    }
+    delete input;
+}  
   input=NULL;
   return NULL;//this should block the execution of the next operation
 }
@@ -125,5 +127,7 @@ void filter::parseArgument(string arguments){
     valid=false;
     return;
   }
+}  
 
-}
+
+

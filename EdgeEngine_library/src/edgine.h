@@ -78,6 +78,7 @@ class edgine{
   int sendBufferSize= 20; // max num of measurements in a batch 
   int scriptStatementMaxSize= 5; // max num of operations per script
   int statementBufferSize= 10; // max num of sample involved in one operation
+  int counter = 0; //num of features items 
   string measurementBufferPolicy= "newest"; //policy of deletion of measurements whose POST failed 
   string policies="newest,decimation,average";
 
@@ -123,6 +124,7 @@ class edgine{
 
   //getters
   int getPeriod();
+  int getItems();
 };
 
 #endif 

@@ -41,7 +41,9 @@ sample* slidingWindow::execute() {
   if(input!=NULL && counter >= windowSize){ // when the samples are enough (at regime)
     accumulator = calculate(samples);
     sample* output=new sample(*input);// we cannot corrupt the input because it is stored in the slidingWindow samples
-    output->value=accumulator; //beacuse we want a sample (with all its info) with the script resulting value
+    for(int i= 0; i< input->myArray.size(); i++){
+    output->myArray[i]=accumulator; //beacuse we want a sample (with all its info) with the script resulting value
+    }
     output->startDate=samples.front()->startDate; //take startDate from the first sample of the slidingWindow
     delete samples[0]; // free memory from this copy of sample because it is useless now
     samples[0]=NULL;
@@ -95,33 +97,46 @@ void slidingWindow::parseArgument(string arguments,int maxWindowBuffer){
 float slidingWindow::calculate(vector<sample*> samples) {
   accumulator=initial;
   int i;
+  int j;
   switch(function){
     case '+':
       for(i=0;i<samples.size();i++){
-        accumulator+=samples[i]->value;
+        for(j= 0; j< input->myArray.size(); j++){
+          accumulator+=samples[i]->myArray[j];
+        }
       }
       break;
     case '*':
       for(i=0;i<samples.size();i++){
-        accumulator*=samples[i]->value;
+        for(j= 0; j< input->myArray.size(); j++){
+          accumulator*=samples[i]->myArray[j];
+        }
       }
       break;
     case '-':
       for(i=0;i<samples.size();i++){
-        accumulator-=samples[i]->value;
+        for(j= 0; j< input->myArray.size(); j++){
+         accumulator-=samples[i]->myArray[j];
+        }
       }
       break;
     case '/':
       for(i=0;i<samples.size();i++){
-        accumulator/=samples[i]->value;
+        for(j= 0; j< input->myArray.size(); j++){
+          accumulator/=samples[i]->myArray[j];
+        }
       }
       break;
     default: //this is a free choice
       for(i=0;i<samples.size();i++){
-        accumulator+=samples[i]->value;
+        for(j= 0; j< input->myArray.size(); j++){
+          accumulator+=samples[i]->myArray[j];
+        }
       }
       break;
   }
   return accumulator;
 }
+
+
 

@@ -6,8 +6,20 @@
 
 #ifndef sample_h
 #define sample_h
+#include <array>
 #include <string>
+#include <iostream>
+#include <vector>
+
+
+
+using std::array;
 using std::string;
+using std::stringstream;
+using std::vector;
+
+
+
 class sample{
   private:
   //variables
@@ -16,7 +28,8 @@ class sample{
   
   public:
   //variables
-  float value;
+  
+  vector<float> myArray;
   string startDate;
   string endDate;
   string url;
@@ -24,9 +37,13 @@ class sample{
   string feature;
   string device;
   string scriptId;
+  int sizeOfSamples;
+ 
+  
   
   //methods 
-  
+  string ArrayToString(vector<float> myArray);
+ 
   
   //constructors
   sample(string);

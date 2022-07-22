@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 edgine* edgine::instance=NULL;
+string fieldName;
 
 edgine* edgine::getInstance(){
   if(instance==NULL){
@@ -76,6 +77,7 @@ void edgine::init( options opts){
       checkFields();
       scriptsId = parseResponse(response,"scripts");
       features= parseResponse(response,"features");
+      
     }
     else{
       Api->POSTIssue(opts.url+"/"+opts.ver+"/"+opts.issues,token,opts.device,response+" retrieving description","initialization");
@@ -95,6 +97,41 @@ void edgine::init( options opts){
     while(firstGetScriptsResponse=="none" && ( ((float)clock() / CLOCKS_PER_SEC)-startGetCount ) < retryTime);//wait here "retryTime" if login failed, then retry login
   }while(firstGetScriptsResponse=="none" );
 
+  do{// GET FEATURES
+    if( ( ((float)clock() / CLOCKS_PER_SEC) - startLogCount ) >= token_expiration_time ){//verify token validity
+        authenticate();
+    }
+      deleteSpaces(features);
+      int beginOfValue = features.find('\"') +1;
+      int endOfValue = features.find('\"', beginOfValue) -1 ;
+      string fieldValue = features.substr(beginOfValue, endOfValue);
+      
+      fieldName = opts.url+"/"+opts.ver+"/features/"+fieldValue;
+      
+      response = Api->GETFeatures(fieldName, token);
+      deleteSpaces(response);
+      if (response.find(fieldValue) == -1)
+      {
+        #ifdef ARDUINO
+        Serial.printf(fieldName.c_str());
+        Serial.printf(" field is not present!");
+        #else
+        cout << fieldName.c_str();
+        cout << " field is not present!" << endl;
+        #endif
+
+      };
+      beginOfValue = response.find("items");
+      endOfValue = response.find("}]}")-1;
+      fieldValue = response.substr(beginOfValue, endOfValue);
+
+      for (char i : fieldValue){
+          if (i == '{'){
+              counter++;
+          }
+      }
+  }while (!isOKresponse(response));
+ 
   setToken(token); //useful for testing only
   initialization=false;
 }
@@ -598,4 +635,8 @@ void edgine::deleteSpaces(string& str){
 
 int edgine::getPeriod(){
   return period;
+}
+
+int edgine::getItems(){
+  return counter;
 }

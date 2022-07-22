@@ -233,7 +233,7 @@ bool APIRest_windows::POSTMeasurement(sample sam, string token)
   req.add("Authorization", token.c_str());
 
   // set the body
-  string body = ("{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + to_string(sam.value) + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}").c_str();
+  string body = ("{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray) + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}").c_str();
   req.setContentLength(body.length());
 
   ostream &os = session.sendRequest(req);
@@ -263,7 +263,7 @@ bool APIRest_windows::POSTMeasurement(sample sam, string token)
       sampleBuffer.push_back(sam); // save the datum in a local sampleBuffer
       cout << "[HTTPS] POST NewMeas... failed";
       cout << ", value: ";
-      cout << sam.value;
+      cout << sam.ArrayToString(sam.myArray);
       cout << ", script: ";
       cout << sam.scriptId.c_str() << endl;
       success = false;
@@ -271,7 +271,8 @@ bool APIRest_windows::POSTMeasurement(sample sam, string token)
     else
     {
       success = true; // if don't need to be resent
-      cout << "Measurement aleady POSTed";
+        
+      cout << "Measurement aleady POSTed" << endl;
     }
   }
   cout << "RESPONSE:" << endl;
@@ -468,7 +469,7 @@ void APIRest_windows::deleteSpaces(string str)
   {
     str.erase(pos, 1); //delete whitespace
   }
-}
+}   
 
 bool APIRest_windows::needToBeRePOST(string response)
 {
@@ -515,4 +516,44 @@ void APIRest_windows::checkIssueBufferSize()
     issueBuffer.erase(issueBuffer.begin(), issueBuffer.begin() + issueBufferSize / decimationPolicyFactor); //delete issueBufferSize/decimationPolicyFactor issue
     vector<issue>(issueBuffer).swap(issueBuffer);                                                           // this create a new Buffer with capacity equal to the size, that frees memory allocated with the erased issues
   }
+}
+
+string APIRest_windows::GETFeatures(string url, string token){
+  // prepare session
+  URI uri(url);
+  HTTPSClientSession session(uri.getHost(), uri.getPort());
+
+  // prepare path
+  string path(uri.getPathAndQuery());
+  if (path.empty())
+    path = "/";
+
+  // send request
+  HTTPRequest req(HTTPRequest::HTTP_GET, path, "HTTP/1.1");
+  req.add("Authorization", token.c_str());
+  session.sendRequest(req);
+
+  // get response
+  HTTPResponse res;
+  cout << res.getStatus() << " " << res.getReason() << endl;
+  // print response
+  response = "";
+  istream &is = session.receiveResponse(res);
+  StreamCopier::copyToString(is, response);
+  // itoa(res.getStatus(), status, 10);
+  sprintf(status, "%d", res.getStatus());
+  response = string(status) + response;
+  cout << "RESPONSE:" << endl;
+  cout << response << endl;
+
+  if (isHTTPCodeOk(res.getStatus()))
+  {                                                            
+    
+  }
+  else
+  {
+    cout << "[HTTPS] POST Login... failed, error: " + res.getStatus() << " " << res.getReason() << endl;
+  }
+  session.abort();
+  return response;
 }

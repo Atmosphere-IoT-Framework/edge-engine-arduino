@@ -453,6 +453,62 @@ string APIRest::GETScript(string url, string token)
   }
 }
 
+string APIRest::GETFeatures(string url, string token)
+{
+  if (!TESTING)
+  {
+#ifdef ESP_WROVER
+    HTTPClient http;
+    http.begin(url.c_str()); //Specify the URL and certificate
+
+    http.addHeader("Authorization", token.c_str());
+    httpCode = http.GET(); //the body is empty
+    itoa(httpCode, httpCodeTmp, 10);
+    response = string(httpCodeTmp) + http.getString().c_str();
+    if (!isHTTPCodeOk(httpCode))
+    { //Check for the returning code
+      if (httpCode < 0)
+        response = response + " error: " + http.errorToString(httpCode).c_str();
+      Serial.print(F("[HTTPS] GET Features... failed, "));
+    }
+    http.end(); //Free the resources
+#else
+    WiFiSSLClient client;
+    if (client.connect(parseServerName(url).c_str(), serverPort))
+    {
+      client.print("GET ");
+      client.print(parseURLPath(url).c_str());
+      client.println(" HTTP 1.1");
+      client.print("Host: ");
+      client.println(parseServerName(url).c_str());
+      client.println("Connection: Keep-Alive");
+      client.print("Authorization: ");
+      client.println(token.c_str());
+      client.println();
+      bool dataAvailable = false;
+      response = "";
+      while (!dataAvailable)
+      {
+        while (client.available())
+        {
+          dataAvailable = true;
+          response += client.read();
+        }
+      }
+    }
+    else
+    {
+      Serial.print(F("[HTTPS] GET Features... failed, client status: "));
+      response += client.status();
+    }
+    client.stop();
+#endif
+    printResponseToSerial("[GET] Features", response);
+    return response;
+  }
+
+}
+
 bool APIRest::POSTMeasurement(sample sam, string token)
 {
   if (!TESTING)
@@ -463,7 +519,7 @@ bool APIRest::POSTMeasurement(sample sam, string token)
     http.addHeader("Content-Type", "application/json");
     http.addHeader("Authorization", token.c_str());
     // [TBD] Arduino does not support std::to_string(float) so I used here String(float).c_str()
-    httpCode = http.POST(("{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + String(sam.value, 6).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}").c_str()); //this is the body
+    httpCode = http.POST(("{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}").c_str()); //this is the body
 
     itoa(httpCode, httpCodeTmp, 10);
     response = string(httpCodeTmp) + http.getString().c_str();
@@ -483,7 +539,7 @@ bool APIRest::POSTMeasurement(sample sam, string token)
         sampleBuffer.push_back(sam); // save the datum in a local sampleBuffer
         Serial.print(F("[HTTPS] POST NewMeas... failed"));
         Serial.print(", value: ");
-        Serial.print(sam.value);
+        Serial.print(sam.ArrayToString(sam.myArray).c_str());
         Serial.print(", script: ");
         Serial.println(sam.scriptId.c_str());
         success = false;
@@ -499,7 +555,7 @@ bool APIRest::POSTMeasurement(sample sam, string token)
     WiFiSSLClient client;
     if (client.connect(parseServerName(sam.url).c_str(), serverPort))
     {
-      string postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + String(sam.value, 6).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
+      string postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
       client.print("POST ");
       client.print(parseURLPath(sam.url).c_str());
       client.println(" HTTP 1.1");
@@ -540,7 +596,7 @@ bool APIRest::POSTMeasurement(sample sam, string token)
           sampleBuffer.push_back(sam); // save the datum in a local sampleBuffer
           Serial.print(F("[HTTPS] POST NewMeas... failed"));
           Serial.print(", value: ");
-          Serial.print(sam.value);
+          Serial.print(sam.ArrayToString(sam.myArray).c_str());
           Serial.print(", script: ");
           Serial.println(sam.scriptId.c_str());
           success = false;
@@ -938,3 +994,4 @@ void APIRest::printResponseToSerial(string request, string response)
   Serial.println(response.c_str());
   Serial.println("===================================================================================");
 }
+

@@ -26,9 +26,11 @@ maxVal:: ~maxVal(){
 
 //methods
 sample* maxVal::execute() {
-  if(input!=NULL && input->value > maxValue){
-    maxValue=input->value;
-    return input;
+  for(int i = 0; i < (input->myArray.size()); i++){
+    if(input!=NULL && input->myArray[i] > maxValue){
+      maxValue=input->myArray[i];
+      return input;
+    }
   }
   delete input; // free memory from this copy of sample because it is useless 
   input=NULL;
@@ -38,3 +40,4 @@ sample* maxVal::execute() {
 float maxVal::getMax(){
 	return maxValue;
 }
+

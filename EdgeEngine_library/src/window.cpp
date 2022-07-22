@@ -24,7 +24,9 @@ window:: ~window(){
 //methods
 sample* window::execute() {
   if(input!=NULL ){
-    accumulator = calculate(input->value);
+    for(int i = 0; i< input->myArray.size(); i++){
+     accumulator = calculate(input->myArray[i]);
+    }
     if(counter==0)
       startDate=input->startDate;//save the startDate of the first sample
     counter++;
@@ -34,7 +36,9 @@ sample* window::execute() {
     //reinitialize 
     accumulator = initial;
     counter=0;
-    input->value=result;
+    for(int j = 0; j< input->myArray.size(); j++){
+      input->myArray[j]=result;
+    }
     input->startDate=startDate;
     return input;
   }
@@ -97,3 +101,5 @@ float window::calculate(float input) {
       break;
   }
 }
+
+

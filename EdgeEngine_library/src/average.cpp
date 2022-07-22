@@ -37,7 +37,9 @@ sample* average::execute() {
   }
   if(input!=NULL && counter >= numOfSamples){ // when the samples are enough (at regime)
     sample* output=new sample(*input);// we cannot corrupt the input because it is stored in the average samples
-    output->value = calculate(samples); //beacuse we want a sample (with all its info) with the script resulting value
+    for(int i = 0; i < (input->myArray.size()); i++){
+      output->myArray[i] = calculate(samples); //beacuse we want a sample (with all its info) with the script resulting value
+    }
     output->startDate=samples.front()->startDate; //take startDate from the first sample of the average
     delete samples[0]; // free memory from this copy of sample because it is useless now
     samples[0]=NULL;
@@ -71,11 +73,15 @@ void average::parseNumOfSamples(string numString,int maxNumOfSamples){
 
 float average::calculate(vector<sample*> samples) {
   float sum=0;
-  for(int i=0;i<samples.size();i++){
-    sum+=samples[i]->value;
+  for(int j = 0; j< (input->myArray.size()); j++){
+    for(int i=0;i<samples.size();i++){
+        sum+=samples[i]->myArray[j];
+      }
   }
+ 
   return sum/numOfSamples;
 }
+
 
 
 

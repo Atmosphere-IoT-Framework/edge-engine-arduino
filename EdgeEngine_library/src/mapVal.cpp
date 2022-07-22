@@ -21,7 +21,9 @@ mapVal:: ~mapVal(){
 //methods
 sample* mapVal::execute() {
   if(input!=NULL ){
-    input->value=calculate(input->value);
+    for(int i = 0; i < (input->myArray.size()); i++){
+      input->myArray[i]=calculate(input->myArray[i]);
+    }
     return input;
   }
   delete input;
@@ -73,3 +75,5 @@ float mapVal::calculate(float input) {
       break;
   }
 }
+
+

@@ -76,6 +76,7 @@ public:
     string GETInfoUpdateDate(string, string);
     string GETDescr(string,string);
     string GETScript(string,string);
+    string GETFeatures(string,string);
     bool POSTMeasurement(sample,string);
     bool POSTIssue(string,string,string,string,string="generic",string=APIRest_windows::getInstance()->getActualDate());
     string getActualDate();
