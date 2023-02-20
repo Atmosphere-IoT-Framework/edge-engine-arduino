@@ -50,7 +50,7 @@ string APIRest::POSTLogin(string url, string username, string password, string t
       string postData = "{\"username\": \"" + username + "\",\"password\": \"" + password + "\",\"tenant\": \"" + tenant + "\"}";
       client.print("POST ");
       client.print(parseURLPath(url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.println(("Content-Type: application/json"));
       client.print("Content-Length: ");
       client.println(postData.length());
@@ -127,7 +127,7 @@ string APIRest::GETInfoUpdateDate(string url, string token)
     {
       client.print("GET ");
       client.print(parseURLPath(url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.print("Host: ");
       client.println(parseServerName(url).c_str());
       client.println("Connection: Keep-Alive");
@@ -215,7 +215,7 @@ string APIRest::GETDescr(string url, string token)
     {
       client.print("GET ");
       client.print(parseURLPath(url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.print("Host: ");
       client.println(parseServerName(url).c_str());
       client.println("Connection: Keep-Alive");
@@ -338,7 +338,7 @@ string APIRest::GETScript(string url, string token)
     {
       client.print("GET ");
       client.print(parseURLPath(url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.print("Host: ");
       client.println(parseServerName(url).c_str());
       client.println("Connection: Keep-Alive");
@@ -478,7 +478,7 @@ string APIRest::GETFeatures(string url, string token)
     {
       client.print("GET ");
       client.print(parseURLPath(url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.print("Host: ");
       client.println(parseServerName(url).c_str());
       client.println("Connection: Keep-Alive");
@@ -558,7 +558,7 @@ bool APIRest::POSTMeasurement(sample sam, string token)
       string postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
       client.print("POST ");
       client.print(parseURLPath(sam.url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.println(("Content-Type: application/json"));
       client.print("Content-Length: ");
       client.println(postData.length());
@@ -724,7 +724,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
       string postData = "{\"device\": \"" + device + "\",  \"date\": \"" + date + "\", \"message\": \"" + message + "\",\"type\": \"" + type + "\"}";
       client.print("POST ");
       client.print(parseURLPath(url).c_str());
-      client.println(" HTTP 1.1");
+      client.println(" HTTP/1.1");
       client.println(("Content-Type: application/json"));
       client.print("Content-Length: ");
       client.println(postData.length());

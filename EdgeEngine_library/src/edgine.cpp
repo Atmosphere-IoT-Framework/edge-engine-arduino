@@ -113,8 +113,8 @@ void edgine::init( options opts){
       if (response.find(fieldValue) == -1)
       {
         #ifdef ARDUINO
-        Serial.printf(fieldName.c_str());
-        Serial.printf(" field is not present!");
+        Serial.print(fieldName.c_str());
+        Serial.println(" field is not present!");
         #else
         cout << fieldName.c_str();
         cout << " field is not present!" << endl;
