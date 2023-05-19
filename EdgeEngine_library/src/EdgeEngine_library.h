@@ -27,6 +27,7 @@
 #include "postVal.h"
 #include "reception.h"
 #include "sample.h"
+#include "timesample.h"
 #include "script.h"
 #include "slidingWindow.h"
 #include "stdDeviation.h"

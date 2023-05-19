@@ -121,6 +121,7 @@ class edgine{
   static edgine* getInstance();
   void init(options);
   int evaluate(vector<sample*>);
+  string getToken();
 
   //getters
   int getPeriod();

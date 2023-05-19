@@ -35,12 +35,12 @@ string APIRest::POSTLogin(string url, string username, string password, string t
     response = string(httpCodeTmp) + http.getString().c_str();
 
     if (!isHTTPCodeOk(httpCode))
-    { //Check for the returning code
+    { // Check for the returning code
       Serial.print(F("[HTTPS] POST Login... failed,"));
       if (httpCode < 0)
         response = response + " error: " + http.errorToString(httpCode).c_str();
     }
-    http.end(); //Free the resources
+    http.end(); // Free the resources
 #else
     WiFiSSLClient client;
     if (client.connect(parseServerName(url).c_str(), serverPort))
@@ -81,7 +81,7 @@ string APIRest::POSTLogin(string url, string username, string password, string t
     return response;
   }
   else // Mocking for the Unit Test
-  {    //example of token response
+  {    // example of token response
     if (username == "username" && password == "password")
     {
       return "200{\"token\": \"JWT token\"}";
@@ -555,7 +555,15 @@ bool APIRest::POSTMeasurement(sample sam, string token)
     WiFiSSLClient client;
     if (client.connect(parseServerName(sam.url).c_str(), serverPort))
     {
-      string postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
+      //patch
+      string postData = "";
+      if(sam.scriptId=="-1"){
+        postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
+      }
+      else{
+        postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
+      }
+      //string postData = "{\"thing\": \"" + sam.thing + "\", \"feature\": \"" + sam.feature + "\", \"device\": \"" + sam.device + "\", \"script\": \"" + sam.scriptId + "\", \"samples\": {\"values\":" + sam.ArrayToString(sam.myArray).c_str() + "}, \"startDate\": \"" + sam.startDate + "\", \"endDate\": \"" + sam.endDate + "\"}";
       client.print("POST ");
       client.print(parseURLPath(sam.url).c_str());
       client.println(" HTTP/1.1");
@@ -580,7 +588,8 @@ bool APIRest::POSTMeasurement(sample sam, string token)
         }
       }
       httpCode = parseHTTPCode(response);
-      itoa(httpCode, httpCodeTmp, 10);
+      //itoa(httpCode, httpCodeTmp, 10);
+      Serial.println(httpCode);
       if (isHTTPCodeOk(httpCode))
       { //Check for the returning code
         success = true;
@@ -625,7 +634,7 @@ bool APIRest::POSTMeasurement(sample sam, string token)
     {
       reposting = true;
       rePOSTIssue(token); // every time we post a new measurement retry to post all the failed alerts
-    }
+    }    
     return success;
   }
   else
@@ -651,10 +660,139 @@ bool APIRest::POSTMeasurement(sample sam, string token)
       reposting = true;
       rePOSTIssue(token); // every time we post a new measurement retry to post all the failed alerts
     }
-
+    Serial.println("End of posting measurements")
     return success;
   }
 }
+
+bool APIRest::POSTTimeseries(vector<timesample> timesam, string idMeasure, string baseUrlServer, string token )
+{
+  WiFiSSLClient client;
+  string url = baseUrlServer + "/v1/measurements/" + idMeasure + "/timeserie";
+  delay(300);
+  if (client.connect(parseServerName(baseUrlServer).c_str(), serverPort))
+  {
+    string postData = "[ ";
+    for (int i = 0; i < timesam.size(); i++)
+    {
+      Serial.println("c");
+      //Serial.println(timesam[i].ArrayToString(timesam[i].timeSampleArray).c_str());
+      postData += "{\"timestamp\":\"" + timesam[i].timestamp + "\",\"values\":" + timesam[i].ArrayToString(timesam[i].timeSampleArray).c_str() + "}";
+      Serial.println(postData.c_str());
+      if(i!=0&&i%1==0){
+        //Serial.print(postData.c_str());
+        postData += "]";
+        Serial.print(postData.c_str());
+        //string url = baseUrlServer + "/v1/measurements/" + idMeasure + "/timeserie";
+        client.print("POST ");
+        client.print(parseURLPath(url).c_str());
+        client.println(" HTTP/1.1");
+        client.println(("Content-Type: application/json"));
+        client.print("Content-Length: ");
+        client.println(postData.length());
+        client.print("Host: ");
+        client.println(parseServerName(url).c_str());
+        client.println("Connection: Keep-Alive");
+        client.print("Authorization: ");
+        client.println(token.c_str());
+        client.println();
+        client.println(postData.c_str());    
+        Serial.println("mandato");  
+        delay(200) ;
+        postData = "[";    
+      }
+      if (i < timesam.size() - 1&&(i==0||i%1!=0)){postData += ",";};
+      //if (i < timesam.size() -1){postData += ", ";};
+      
+    }
+    if (postData!="["){postData += "]";
+      //postData += "]";
+      delay(200) ;
+      Serial.print(postData.c_str());
+      //string url = baseUrlServer + "/v1/measurements/" + idMeasure + "/timeserie";
+    client.print("POST ");
+    client.print(parseURLPath(url).c_str());
+    client.println(" HTTP/1.1");
+    client.println(("Content-Type: application/json"));
+    client.print("Content-Length: ");
+    client.println(postData.length());
+    client.print("Host: ");
+    client.println(parseServerName(url).c_str());
+    client.println("Connection: Keep-Alive");
+    client.print("Authorization: ");
+    client.println(token.c_str());
+    client.println();
+    client.println(postData.c_str());
+     }
+    client.stop();
+    return true;
+  }
+}
+  /*
+    bool dataAvailable = false;
+    response = "";
+    while (!dataAvailable)
+    {
+      while (client.available())
+      {
+        dataAvailable = true;
+        response += client.read();
+      }
+    }
+    httpCode = parseHTTPCode(response);
+    //itoa(httpCode, httpCodeTmp, 10);
+    if (isHTTPCodeOk(httpCode))
+    { // Check for the returning code
+      success = true;
+      Serial.println("done");
+    }
+    else
+    { // something has gone wrong in the POST
+      // if the post has encoutered an error, we want to save datum that will be resent as soon as possible
+      success = false;
+      if (httpCode < 0)
+        char httpCodeTmp[3];
+        itoa(httpCode, httpCodeTmp, 10);
+        response = response + " error: " + httpCodetmp;
+        Serial.println(response.c_str());
+      /*if (needToBeRePOST(response))
+      {
+        checkSampleBufferSize();     // if there is not space, make it
+        sampleBuffer.push_back(sam); // save the datum in a local sampleBuffer
+        Serial.print(F("[HTTPS] POST NewMeas... failed")); Serial.print(", value: ");  
+        Serial.print(", value: ");
+        Serial.print(sam.ArrayToString(sam.myArray).c_str());  Serial.print(", script: ");        
+        Serial.print(", script: ");
+        Serial.println(sam.scriptId.c_str());
+        success = false;
+      }
+      else
+      {
+        success = true; // if don't need to be resent
+        Serial.println(F("Measurement aleady POSTed"));
+      }
+    }
+  }
+  else
+  {
+    Serial.print(F("[HTTPS] POST NewMeas... failed, client status: "));
+    response += client.status();
+  }
+  client.stop();
+
+  printResponseToSerial("[POST] Measurement", response);
+  /*if (!reposting)
+  {
+    reposting = true;
+    rePOSTMeasurement(token); // every time we post a new measurement retry to post all the failed ones
+  }
+  if (!reposting)
+  {
+    reposting = true;
+    rePOSTIssue(token); // every time we post a new measurement retry to post all the failed alerts
+  }
+  return success;
+}*/
 
 void APIRest::rePOSTMeasurement(string token)
 {
@@ -685,7 +823,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
     response = string(httpCodeTmp) + http.getString().c_str();
 
     if (isHTTPCodeOk(httpCode))
-    { //Check for the returning code
+    { // Check for the returning code
       success = true;
     }
     else
@@ -702,7 +840,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
         al.type = type;
         al.url = url;
 
-        checkIssueBufferSize(); //if there is not space, make it
+        checkIssueBufferSize(); // if there is not space, make it
         // if the post has encoutered an error, we want to save datum that will be resent as soon as possible
         issueBuffer.push_back(al); // save the datum in a local sampleBuffer
 
@@ -716,7 +854,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
         success = true; // if don't need to be resent
       }
     }
-    http.end(); //Free the resources
+    http.end(); // Free the resources
 #else
     WiFiSSLClient client;
     if (client.connect(parseServerName(url).c_str(), serverPort))
@@ -748,7 +886,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
       httpCode = parseHTTPCode(response);
       itoa(httpCode, httpCodeTmp, 10);
       if (isHTTPCodeOk(httpCode))
-      { //Check for the returning code
+      { // Check for the returning code
         success = true;
       }
       else
@@ -765,7 +903,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
           al.type = type;
           al.url = url;
 
-          checkIssueBufferSize(); //if there is not space, make it
+          checkIssueBufferSize(); // if there is not space, make it
           // if the post has encoutered an error, we want to save datum that will be resent as soon as possible
           issueBuffer.push_back(al); // save the datum in a local sampleBuffer
 
@@ -806,7 +944,7 @@ bool APIRest::POSTIssue(string url, string token, string device, string message,
       al.type = type;
       al.url = url;
 
-      checkIssueBufferSize(); //if there is not space, make it
+      checkIssueBufferSize(); // if there is not space, make it
       // if the post has encoutered an error, we want to save datum that will be resent as soon as possible
       issueBuffer.push_back(al); // save the datum in a local Buffer
       success = false;
@@ -845,13 +983,27 @@ bool APIRest::needToBeRePOST(string response)
 
 string APIRest::getActualDate()
 {
+#ifdef ESP_WROVER
+  timeElapsed = ((long)clock() / CLOCKS_PER_SEC) * SECOND - startingTime; // in milliseconds
+#else
+  timeElapsed = millis() - startingTime;
+#endif
+  // [TBD] Arduino does not support std::to_string('float') so I used here string( String('float').c_str() )
+  return string(String(atof(timestamp.c_str()) + timeElapsed).c_str());
+}
+
+long APIRest::getActualDateLong()
+{
   #ifdef ESP_WROVER
   timeElapsed = ((long)clock() / CLOCKS_PER_SEC) * SECOND - startingTime; //in milliseconds
   #else
   timeElapsed = millis() - startingTime;
   #endif
   // [TBD] Arduino does not support std::to_string('float') so I used here string( String('float').c_str() )
-  return string(String(atof(timestamp.c_str()) + timeElapsed).c_str());
+  Serial.println(timeElapsed);
+  Serial.println(timestamp.c_str());
+  Serial.println(std::stol(timestamp.c_str()));
+  return atol(timestamp.c_str()) + timeElapsed;
 }
 
 string APIRest::parseResponse(string response, string fieldName, bool quotedField)
@@ -863,7 +1015,7 @@ string APIRest::parseResponse(string response, string fieldName, bool quotedFiel
     Serial.println(" field is not present!");
     return "";
   }
-  int beginOfValue = response.find(":", response.find(fieldName)) + 1; //find starting index of field value
+  int beginOfValue = response.find(":", response.find(fieldName)) + 1; // find starting index of field value
   int endOfValue;
   string fieldValue;
 
@@ -880,11 +1032,11 @@ string APIRest::parseResponse(string response, string fieldName, bool quotedFiel
       endOfValue -= 1;
     }
     else if (endOfValue == -1)
-    { //if the object is the last of response
+    { // if the object is the last of response
       endOfValue = response.find('}', beginOfValue);
 
       if (endOfValue == -1)
-      { //if the array is the last of response
+      { // if the array is the last of response
         endOfValue = response.find(']', beginOfValue);
       }
     }
@@ -898,7 +1050,7 @@ void APIRest::deleteSpaces(string str)
   int pos = 0;
   while ((pos = str.find(" ")) != -1)
   {
-    str.erase(pos, 1); //delete whitespace
+    str.erase(pos, 1); // delete whitespace
   }
 }
 
@@ -942,18 +1094,18 @@ void APIRest::checkIssueBufferSize()
   { //if the rePOSTing of an issue fails, when this check is done the issue is already at the begin of issueBuffer,
     // so do not take into account its presence (so issueBuffer.size()-1), beacuse the issue will be deleted from the begin of the queue and added back to the end.
     // don't need to deallocate every issue individually because we passed the struct and not the pointer
-    issueBuffer.erase(issueBuffer.begin(), issueBuffer.begin() + issueBufferSize / decimationPolicyFactor); //delete issueBufferSize/decimationPolicyFactor issue
+    issueBuffer.erase(issueBuffer.begin(), issueBuffer.begin() + issueBufferSize / decimationPolicyFactor); // delete issueBufferSize/decimationPolicyFactor issue
     vector<issue>(issueBuffer).swap(issueBuffer);                                                           // this create a new Buffer with capacity equal to the size, that frees memory allocated with the erased issues
   }
 }
 void APIRest::checkSampleBufferSize()
 {
   if (sampleBufferSize <= sampleBuffer.size() - (reposting ? 1 : 0))
-  { //if the rePOSTing of a sample fails, when this check is done the sample is already at the begin of sampleBuffer,
+  { // if the rePOSTing of a sample fails, when this check is done the sample is already at the begin of sampleBuffer,
     // so do not take into account its presence (so sampleBuffer.size()-1), beacuse the sample will be deleted from the begin of the queue and added back to the end.
     // [TBD]
     // don't need to deallocate every sample individually because we passed the struct and not the pointer
-    sampleBuffer.erase(sampleBuffer.begin(), sampleBuffer.begin() + sampleBufferSize / decimationPolicyFactor); //delete sampleBufferSize/decimationPolicyFactor sample
+    sampleBuffer.erase(sampleBuffer.begin(), sampleBuffer.begin() + sampleBufferSize / decimationPolicyFactor); // delete sampleBufferSize/decimationPolicyFactor sample
     vector<sample>(sampleBuffer).swap(sampleBuffer);                                                            // this create a new Buffer with capacity equal to the size, that frees memory allocated with the erased samples
   }
 }
@@ -978,10 +1130,11 @@ string APIRest::parseURLPath(string url)
     return uPath;
 }
 
-int APIRest::parseHTTPCode(string response)
+int APIRest::parseHTTPCode(string response) // non funziona
 {
   string code = response.substr(response.find("HTTP/") + 9);
   code = code.substr(0, 3);
+  Serial.println(code.c_str());
   return atoi(code.c_str());
 }
 
@@ -994,4 +1147,3 @@ void APIRest::printResponseToSerial(string request, string response)
   Serial.println(response.c_str());
   Serial.println("===================================================================================");
 }
-

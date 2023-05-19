@@ -29,6 +29,7 @@ using std::string;
 #include <time.h>
 //#include <pthread.h>
 #include "sample.h"
+#include "timesample.h"
 
 #define SECOND  1000 // 1000 milliseconds in a second
 
@@ -101,8 +102,10 @@ class APIRest{
   string GETScript(string,string);
   string GETFeatures(string,string);
   bool POSTMeasurement(sample,string);
+  bool POSTTimeseries(vector<timesample>,string,string,string);
   bool POSTIssue(string,string,string,string,string="generic",string=APIRest::getInstance()->getActualDate());
   string getActualDate();
+  long getActualDateLong();
   bool TESTING;
   int getSampleBufferSize();
   int getIssueBufferSize();

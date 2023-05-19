@@ -97,6 +97,9 @@ void edgine::init( options opts){
     while(firstGetScriptsResponse=="none" && ( ((float)clock() / CLOCKS_PER_SEC)-startGetCount ) < retryTime);//wait here "retryTime" if login failed, then retry login
   }while(firstGetScriptsResponse=="none" );
 
+// patch
+  bool isOK = false;
+
   do{// GET FEATURES
     if( ( ((float)clock() / CLOCKS_PER_SEC) - startLogCount ) >= token_expiration_time ){//verify token validity
         authenticate();
@@ -109,11 +112,15 @@ void edgine::init( options opts){
       fieldName = opts.url+"/"+opts.ver+"/features/"+fieldValue;
       
       response = Api->GETFeatures(fieldName, token);
+
+       // patch 
+      isOK = isOKresponse(response);
+
       deleteSpaces(response);
       if (response.find(fieldValue) == -1)
       {
         #ifdef ARDUINO
-        Serial.print(fieldName.c_str());
+        Serial.println(fieldName.c_str());
         Serial.println(" field is not present!");
         #else
         cout << fieldName.c_str();
@@ -130,10 +137,17 @@ void edgine::init( options opts){
               counter++;
           }
       }
-  }while (!isOKresponse(response));
+  }while (!isOK);
  
   setToken(token); //useful for testing only
   initialization=false;
+}
+
+//patch
+string edgine::getToken(){
+  authenticate();
+  setToken(token); // Update the token in each script
+  return token;
 }
 
 
